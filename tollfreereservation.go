@@ -222,7 +222,7 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	
 	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
     fmt.Println("Reserve Details Structure ",ReserveObj)
-	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",ReserveObj)))
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",json.Marshal(ReserveObj))))
 	if err != nil {
 		return nil, err
 	}
