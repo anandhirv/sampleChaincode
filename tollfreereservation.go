@@ -99,7 +99,7 @@ type UsageDetailsFromCSP struct {
 }
 
 type Reserve struct {
-	TollFreeNo string
+	TollFreeno string
 	status string
 }
 // Init method will be called during deployment.
