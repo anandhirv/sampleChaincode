@@ -98,7 +98,10 @@ type UsageDetailsFromCSP struct {
 		status string
 }
 
-
+type Reserve struct {
+	TollFreeNo string
+	status string
+}
 // Init method will be called during deployment.
 
 func (t *NumberPortabilityChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
