@@ -22,7 +22,6 @@ import (
 	"strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strings"
-	"encoding/json"
 )
 
 // NumberPortabilityChaincode is a Smart Contract between CSPs for porting In or Porting Out Customers and settling the billing across the CSPs
@@ -62,12 +61,6 @@ type UserAcceptance struct {
 		CustomerAcceptance string
 		status string
 		
-}
-
-type Reserve struct {
-	TollFreeno string;
-	status string;
-	
 }
 
 
@@ -123,6 +116,54 @@ func (t *NumberPortabilityChaincode) Init(stub shim.ChaincodeStubInterface, func
 
 // CGTA invoke function
 
+func (t *NumberPortabilityChaincode) EligibilityConfirm(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+    fmt.Println("EligibilityConfirm  Information invoke Begins...")
+	
+     //VP0
+	
+	if len(args) != 6 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 6")
+	}
+	status1 := "EligibilityConfirmed"
+	key := args[0]+args[1]+args[2]
+	EligibilityConfirmObj := EligibilityConfirm{Number: args[0], ServiceProviderOld: args[1], ServiceProviderNew: args[2], CustomerName: args[3], SSNNumber: args[4], PortabilityIndicator: args[5], status: status1}
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",EligibilityConfirmObj)))
+			if err != nil {
+				return nil, err
+			}
+	
+	
+	fmt.Println("EligibilityConfirm  Information invoke ends...")
+	return nil, nil 
+}
+
+
+
+func (t *NumberPortabilityChaincode) ConfirmationOfMNPRequest(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+    fmt.Println("ConfirmationOfMNPRequest  Information invoke Begins...")
+	
+     //VP0
+	
+	if len(args) != 6 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 6")
+	}
+	
+	status1 := "InitiationConfirmed"
+	key := args[0]+args[1]+args[2]
+	EligibilityConfirmObj := EligibilityConfirm{Number: args[0], ServiceProviderOld: args[1], ServiceProviderNew: args[2], CustomerName: args[3], SSNNumber: args[4], PortabilityIndicator: args[5], status: status1}
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",EligibilityConfirmObj)))
+			if err != nil {
+				return nil, err
+			}
+	
+	fmt.Println("ConfirmationOfMNPRequest  Information invoke ends...")
+	return nil, nil 
+}
+
+
+
 
 // UserAcceptance Invoke function
 
@@ -155,42 +196,181 @@ func (t *NumberPortabilityChaincode) UserAcceptance(stub shim.ChaincodeStubInter
 	fmt.Println("UserAcceptance Information invoke ends...")
 	return nil, nil
 }
-//Reserve Invoke function
-func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
-    fmt.Println("Reserve Information invoke Begins...")
-
-	if len(args) != 2 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 2")
-	}
-
-	// Check the Reseve paramater, if true then update world state with new status
-	
-	var status1 string
-	key := args[0]+args[1]
-	Acceptance := args[1]
-	if(Acceptance == "true"){
-	 status1 = "RequestInitiated"
-	} 
-	
-	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
-    fmt.Println("Reserve Details Structure ",ReserveObj)
-	value, e := json.Marshal(ReserveObj)
-	if e != nil {
-		return nil, e
-	}
-	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",value)))
-	if err != nil {
-		return nil, err
-	}
-	
-	fmt.Println("Reserve Information invoke ends...")
-	return nil, nil
-}
 
 
 // FinalPortInfo Invoke function
 
+func (t *NumberPortabilityChaincode) UsageDetailsFromDonorCSP(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+    fmt.Println("UsageDetailsFromDonorCSP Information invoke Begins...")
+
+
+	if len(args) != 8 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 8")
+	}
+	
+	    var err error
+		
+		status1 := "DonorApproved"
+		key := args[0]+args[1]+args[2]
+		
+            UsageDetailsFromDonorCSPObj := UsageDetailsFromCSP{Number: args[0], ServiceProviderOld: args[1], ServiceProviderNew: args[2], Plan: args[3], ServiceValidity: args[4], TalktimeBalance: args[5], SMSbalance: args[6], DataBalance: args[7], status: status1}
+			fmt.Println("Donor Service Details Structure ",UsageDetailsFromDonorCSPObj)
+			err = stub.PutState(key,[]byte(fmt.Sprintf("%s",UsageDetailsFromDonorCSPObj)))
+			if err != nil {
+				return nil, err
+			}
+			
+	
+		fmt.Println("UsageDetailsFromDonorCSP Information invoke ends...")
+		return nil, nil
+		
+   
+}
+
+// in args this will take three values - number and OldCSP (DonorCSP) and newCSP
+func (t *NumberPortabilityChaincode) EntitlementFromRecipientCSP(stub shim.ChaincodeStubInterface, argsOld []string) ([]byte, error) {
+      
+        if len(argsOld) != 3 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 3")
+	    }
+		
+		var ServiceValidity,TalktimeBalance,SMSbalance,DataBalance int
+		
+	
+		key := argsOld[0]+argsOld[1]+argsOld[2]
+		valAsbytes, err := stub.GetState(key)
+		if err != nil {
+			jsonResp := "{\"Error\":\"Failed to get state for " + key + "\"}"
+			return nil, errors.New(jsonResp)
+		} else if len(valAsbytes) == 0{
+			jsonResp := "{\"Error\":\"Failed to get Query for " + key + "\"}"
+			return nil, errors.New(jsonResp)
+		}
+		
+		donorDetails := fmt.Sprintf("%s", valAsbytes)
+		
+		donorDetails = strings.Trim(donorDetails,"{")
+		donorDetails = strings.Trim(donorDetails,"}")
+		donorDetails = strings.Trim(donorDetails,"[")
+		donorDetails = strings.Trim(donorDetails,"]")
+		
+		args := strings.Split(donorDetails, " ")
+		
+	    fmt.Println("Donor Service Details Structure",args)
+	   
+	    
+		Plan := args[3]
+		
+	    ServiceValidity, err = strconv.Atoi(args[4])
+		if err != nil {
+		return nil, err
+	    }
+		
+	    TalktimeBalance, err = strconv.Atoi(args[5])
+		if err != nil {
+		return nil, err
+	    }
+		
+		SMSbalance, err = strconv.Atoi(args[6])
+		if err != nil {
+		return nil, err
+	    }
+		
+		DataBalance, err = strconv.Atoi(args[7])
+		if err != nil {
+		return nil, err
+	    }
+		
+		
+			
+		// Calculate Acceptor Service
+		
+		if Plan == "PlanA"{
+		    Plan = "PlanC"
+			ServiceValidity = ServiceValidity - (ServiceValidity/5)
+			TalktimeBalance = TalktimeBalance - (TalktimeBalance/5)
+			SMSbalance = SMSbalance - (SMSbalance/5)
+			DataBalance = DataBalance - (DataBalance/5)
+		}	
+
+        if Plan == "PlanB"{
+		    Plan = "PlanA"
+			ServiceValidity = ServiceValidity - (ServiceValidity/6)
+			TalktimeBalance = TalktimeBalance - (TalktimeBalance/6)
+			SMSbalance = SMSbalance - (SMSbalance/6)
+			DataBalance = DataBalance - (DataBalance/6)
+		}
+		
+        if Plan == "PlanC"{
+		    Plan = "PlanB"
+			ServiceValidity = ServiceValidity - (ServiceValidity/4)
+			TalktimeBalance = TalktimeBalance - (TalktimeBalance/4)
+			SMSbalance = SMSbalance - (SMSbalance/4)
+			DataBalance = DataBalance - (DataBalance/4)
+		}
+
+         ServiceValidityNew := strconv.Itoa(ServiceValidity)
+         TalktimeBalanceNew := strconv.Itoa(TalktimeBalance)
+         SMSbalanceNew := strconv.Itoa(SMSbalance)
+         DataBalanceNew := strconv.Itoa(DataBalance)
+		 
+		 
+		 // Put the state of Acceptor
+		 
+        status1 := "AcceptorApproved"
+		
+            UsageDetailsFromAcceptorCSPObj := UsageDetailsFromCSP{Number: argsOld[0], ServiceProviderOld: argsOld[1], ServiceProviderNew: argsOld[2], Plan: Plan, ServiceValidity: ServiceValidityNew, TalktimeBalance: TalktimeBalanceNew, SMSbalance: SMSbalanceNew, DataBalance: DataBalanceNew, status: status1}
+			fmt.Println("Acceptor Service Details Structure",UsageDetailsFromAcceptorCSPObj)
+			err = stub.PutState(key,[]byte(fmt.Sprintf("%s",UsageDetailsFromAcceptorCSPObj)))
+			if err != nil {
+				return nil, err
+			}
+		
+	
+	    valAsbytesNew, errNew := stub.GetState(key)
+		if errNew != nil {
+			jsonResp := "{\"Error\":\"Failed to get state for " + key + "\"}"
+			return nil, errors.New(jsonResp)
+		} else if len(valAsbytes) == 0{
+			jsonResp := "{\"Error\":\"Failed to get Query for " + key + "\"}"
+			return nil, errors.New(jsonResp)
+		}
+		
+		
+		acceptorDetails := fmt.Sprintf("%s", valAsbytesNew)
+		
+		acceptorDetails = strings.Trim(acceptorDetails,"{")
+		acceptorDetails = strings.Trim(acceptorDetails,"}")
+		acceptorDetails = strings.Trim(acceptorDetails,"[")
+		acceptorDetails = strings.Trim(acceptorDetails,"]")
+		
+		argsNew := strings.Split(acceptorDetails, " ")
+		
+		fmt.Println("Acceptor Service Details Structure",argsNew)
+		
+		
+		
+		
+		UsageDetailsFromDonorandAcceptorCSPObj := UsageDetailsFromDonorandAcceptorCSP{Number: args[0], ServiceProviderOld: args[1], PlanOld: args[3], ServiceValidityOld: args[4], TalktimeBalanceOld: args[5], SMSbalanceOld: args[6], DataBalanceOld: args[7], ServiceProviderNew: argsNew[2], PlanNew: argsNew[3], ServiceValidityNew: argsNew[4], TalktimeBalanceNew: argsNew[5], SMSbalanceNew: argsNew[6], DataBalanceNew: argsNew[7], status: status1}
+        
+		fmt.Println("Donor+Acceptor Service Details Structure",UsageDetailsFromDonorandAcceptorCSPObj)
+		// put the value for Regulator Query in future
+		err = stub.PutState(key,[]byte(fmt.Sprintf("%s",UsageDetailsFromDonorandAcceptorCSPObj)))
+			if err != nil {
+				return nil, err
+			}
+			
+			
+		fmt.Println("Invoke EntitlementFromRecipientCSP Chaincode... end") 
+		return nil,nil
+	
+	
+
+}
+
+// args should be Number, serviceProviderOld, serviceProviderNew
 
 func (t *NumberPortabilityChaincode) RegulatorQuery(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     var key, jsonResp string
@@ -216,15 +396,17 @@ func (t *NumberPortabilityChaincode) RegulatorQuery(stub shim.ChaincodeStubInter
 }
 
 
-func (t *NumberPortabilityChaincode) RegulatorQuery1(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+// args should be Number, serviceProviderOld, serviceProviderNew
+
+func (t *NumberPortabilityChaincode) EntitlementFromRecipientCSPQuery(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
     var key, jsonResp string
     var err error
 
-    if len(args) != 1 {
-        return nil, errors.New("Incorrect number of arguments. Expecting 1 arguments")
+    if len(args) != 3 {
+        return nil, errors.New("Incorrect number of arguments. Expecting 3 arguments")
     }
 
-    key = args[0]+args[1]
+    key = args[0]+args[1]+args[2]
     valAsbytes, err := stub.GetState(key)
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
@@ -234,11 +416,10 @@ func (t *NumberPortabilityChaincode) RegulatorQuery1(stub shim.ChaincodeStubInte
         return nil, errors.New(jsonResp)
 	}
 
-	fmt.Println("Query NumberPortability Chaincode... end") 
+	fmt.Println("Query EntitlementFromRecipientCSPQuery ... end") 
     return valAsbytes, nil 
 
 }
-
 
 
 
@@ -319,6 +500,63 @@ func (t *NumberPortabilityChaincode) Query(stub shim.ChaincodeStubInterface, fun
   
 	
 }
+
+//Reserve Invoke function
+func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+    fmt.Println("Reserve Information invoke Begins...")
+
+	if len(args) != 2 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+	}
+
+	// Check the Reseve paramater, if true then update world state with new status
+	
+	var status1 string
+	key := args[0]+args[1]
+	Acceptance := args[1]
+	if(Acceptance == "true"){
+	 status1 = "RequestInitiated"
+	} 
+	
+	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
+    fmt.Println("Reserve Details Structure ",ReserveObj)
+	value, e := json.Marshal(ReserveObj)
+	if e != nil {
+		return nil, e
+	}
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",value)))
+	if err != nil {
+		return nil, err
+	}
+	
+	fmt.Println("Reserve Information invoke ends...")
+	return nil, nil
+}
+
+func (t *NumberPortabilityChaincode) RegulatorQuery1(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+    var key, jsonResp string
+    var err error
+
+    if len(args) != 1 {
+        return nil, errors.New("Incorrect number of arguments. Expecting 1 arguments")
+    }
+
+    key = args[0]+args[1]
+    valAsbytes, err := stub.GetState(key)
+    if err != nil {
+        jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+        return nil, errors.New(jsonResp)
+    } else if len(valAsbytes) == 0{
+	    jsonResp = "{\"Error\":\"Failed to get Query for " + key + "\"}"
+        return nil, errors.New(jsonResp)
+	}
+
+	fmt.Println("Query NumberPortability Chaincode... end") 
+    return valAsbytes, nil 
+
+}
+
 
 
 
