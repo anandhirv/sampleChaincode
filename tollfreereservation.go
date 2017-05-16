@@ -241,6 +241,87 @@ func (t *NumberPortabilityChaincode) RegulatorQuery1(stub shim.ChaincodeStubInte
 
 
 
+
+// Invoke Function
+
+func (t *NumberPortabilityChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+      
+	 fmt.Println("Invoke NumberPortability Chaincode... start") 
+
+	
+	// Handle different functions UserAcceptance
+	if function == "EligibilityConfirm" {
+		return t.EligibilityConfirm (stub, args)
+	} else if function == "UsageDetailsFromDonorCSP" {
+		return t.UsageDetailsFromDonorCSP(stub, args)
+	}else if function == "EntitlementFromRecipientCSP" {
+		return t.EntitlementFromRecipientCSP(stub, args)
+	}else if function == "UserAcceptance" {
+		return t.UserAcceptance(stub, args)
+	}else if function == "ConfirmationOfMNPRequest" {
+		return t.ConfirmationOfMNPRequest(stub, args)
+	} else{
+	    return nil, errors.New("Invalid function name. Expecting 'EligibilityConfirm' or 'UsageDetailsFromDonorCSP' or 'EntitlementFromRecipientCSP' but found '" + function + "'")
+	}
+	
+	
+	fmt.Println("Invoke Numberportability Chaincode... end") 
+	
+	return nil,nil;
+}
+
+
+
+
+// Query to get CSP Service Details
+
+func (t *NumberPortabilityChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+	fmt.Println("Query NumberPortability Chaincode... start") 
+
+	
+	if function == "EntitlementFromRecipientCSPQuery" {
+		return t.EntitlementFromRecipientCSPQuery(stub, args)
+	} 
+	
+	if function == "RegulatorQuery" {
+		return t.RegulatorQuery(stub, args)
+	} 
+	
+	// else We can query WorldState to fetch value
+	
+	var key, jsonResp string
+    var err error
+
+    if len(args) < 1 {
+        return nil, errors.New("Incorrect number of arguments. Expecting name of the key to query")
+    }
+	fmt.Println(len(args))
+	if len(args) == 3 {
+	   key = args[0]+args[1]+args[2]
+	} else if len(args) == 2 {
+	   key = args[0]+args[1]
+	} else {
+	   key = args[0]
+	}
+
+    
+    valAsbytes, err := stub.GetState(key)
+    if err != nil {
+        jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+        return nil, errors.New(jsonResp)
+    } else if len(valAsbytes) == 0{
+	    jsonResp = "{\"Error\":\"Failed to get Query for " + key + "\"}"
+        return nil, errors.New(jsonResp)
+	}
+
+	fmt.Println("Query NumberPoratbility Chaincode... end") 
+    return valAsbytes, nil 
+  
+	
+}
+
+
+
 func main() {
 	err := shim.Start(new(NumberPortabilityChaincode))
 	if err != nil {
