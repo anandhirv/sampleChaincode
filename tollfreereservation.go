@@ -195,7 +195,7 @@ func (t *NumberPortabilityChaincode) UserAcceptance(stub shim.ChaincodeStubInter
 	
 	UserAcceptanceObj := UserAcceptance{Number: args[0], ServiceProviderOld: args[1], PlanOld: args[2], ServiceValidityOld: args[3], TalktimeBalanceOld: args[4], SMSbalanceOld: args[5], DataBalanceOld: args[6], ServiceProviderNew: args[7], PlanNew: args[8], ServiceValidityNew: args[9], TalktimeBalanceNew: args[10], SMSbalanceNew: args[11], DataBalanceNew: args[12], CustomerAcceptance: args[13], status: status1}
     fmt.Println("UserAcceptance Details Structure ",UserAcceptanceObj)
-	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",UserAc-tanceObj)))
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",UserAcceptanceObj)))
 	if err != nil {
 		return nil, err
 	}
