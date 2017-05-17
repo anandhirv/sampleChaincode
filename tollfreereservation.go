@@ -444,7 +444,10 @@ func (t *NumberPortabilityChaincode) Invoke(stub shim.ChaincodeStubInterface, fu
 		return t.UserAcceptance(stub, args)
 	}else if function == "ConfirmationOfMNPRequest" {
 		return t.ConfirmationOfMNPRequest(stub, args)
-	} else{
+	} else if function == "Reserve" {
+		return t.Reserve(stub, args)
+	}
+	else{
 	    return nil, errors.New("Invalid function name. Expecting 'EligibilityConfirm' or 'UsageDetailsFromDonorCSP' or 'EntitlementFromRecipientCSP' but found '" + function + "'")
 	}
 	
