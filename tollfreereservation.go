@@ -518,6 +518,7 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	
 	var status1 string
 	var key string
+	var Acceptance string
 	key = args[0]+args[1]
 	Acceptance = args[1]
 	if(Acceptance == "true"){
