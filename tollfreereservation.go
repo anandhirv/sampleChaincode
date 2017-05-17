@@ -517,6 +517,8 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	// Check the Reseve paramater, if true then update world state with new status
 	
 	var status1 string
+	var key
+	
 	key = args[0]+args[1]
 	Acceptance = args[1]
 	if(Acceptance == "true"){
