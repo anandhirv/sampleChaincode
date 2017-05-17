@@ -529,7 +529,7 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	if e != nil {
 		return nil, e
 	}
-	err := stub.PutState(key,[]byte(string(value))))
+	err := stub.PutState(key,[]byte(string(value)))
 	//err := stub.PutState(key,[]byte(fmt.Sprintf("%s",value)))
 	//err := stub.PutState(key,[]byte(fmt.Sprintf("%s",ReserveObj)))
 	if err != nil {
