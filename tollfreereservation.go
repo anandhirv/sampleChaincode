@@ -473,6 +473,10 @@ func (t *NumberPortabilityChaincode) Query(stub shim.ChaincodeStubInterface, fun
 		return t.RegulatorQuery(stub, args)
 	} 
 	
+	if function == "RegulatorQuery1" {
+		return t.RegulatorQuery(stub, args)
+	} 
+	
 	// else We can query WorldState to fetch value
 	
 	var key, jsonResp string
