@@ -519,18 +519,19 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	var status1 string
 	var key string
 	var Acceptance string
-	key = args[0]+args[1]
+	key = args[0]
+	value = args[1]
 	Acceptance = args[1]
 	if(Acceptance == "true"){
 	 status1 = "RequestInitiated"
 	} 
 	
-	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
-    fmt.Println("Reserve Details Structure ",ReserveObj)
-	value, e := json.Marshal(ReserveObj)
-	if e != nil {
-		return nil, e
-	}
+	//ReserveObj := Reserve{TollFreeno: args[0], status: status1}
+    //fmt.Println("Reserve Details Structure ",ReserveObj)
+	//value, e := json.Marshal(ReserveObj)
+	//if e != nil {
+		//return nil, e
+	//}
 	err := stub.PutState(key,[]byte(string(value)))
 	//err := stub.PutState(key,[]byte(fmt.Sprintf("%s",value)))
 	//err := stub.PutState(key,[]byte(fmt.Sprintf("%s",ReserveObj)))
