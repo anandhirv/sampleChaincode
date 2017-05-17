@@ -525,11 +525,12 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	
 	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
     fmt.Println("Reserve Details Structure ",ReserveObj)
-	value, e := json.Marshal(ReserveObj)
-	if e != nil {
-		return nil, e
-	}
-	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",string(value))))
+	//value, e := json.Marshal(ReserveObj)
+	//if e != nil {
+	//	return nil, e
+	//}
+	//err := stub.PutState(key,[]byte(fmt.Sprintf("%s",string(value))))
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",ReserveObj)))
 	if err != nil {
 		return nil, err
 	}
