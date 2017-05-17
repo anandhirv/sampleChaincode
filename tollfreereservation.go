@@ -22,7 +22,7 @@ import (
 	"strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strings"
-	//"encoding/json"
+	"encoding/json"
 )
 
 // NumberPortabilityChaincode is a Smart Contract between CSPs for porting In or Porting Out Customers and settling the billing across the CSPs
@@ -525,12 +525,12 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	
 	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
     fmt.Println("Reserve Details Structure ",ReserveObj)
-	//value, e := json.Marshal(ReserveObj)
-	//if e != nil {
-	//	return nil, e
-	//}
-	//err := stub.PutState(key,[]byte(fmt.Sprintf("%s",string(value))))
-	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",ReserveObj)))
+	value, e := json.Marshal(ReserveObj)
+	if e != nil {
+		return nil, e
+	}
+	err := stub.PutState(key,[]byte(fmt.Sprintf("%s",value)))
+	//err := stub.PutState(key,[]byte(fmt.Sprintf("%s",ReserveObj)))
 	if err != nil {
 		return nil, err
 	}
