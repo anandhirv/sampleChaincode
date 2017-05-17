@@ -474,7 +474,7 @@ func (t *NumberPortabilityChaincode) Query(stub shim.ChaincodeStubInterface, fun
 	} 
 	
 	if function == "RegulatorQuery1" {
-		return t.RegulatorQuery(stub, args)
+		return t.RegulatorQuery1(stub, args)
 	} 
 	
 	// else We can query WorldState to fetch value
