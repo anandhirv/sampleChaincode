@@ -520,7 +520,7 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	var value string
 	key = args[0]
 	value = args[1]
-	Acceptance = args[1]
+	//Acceptance = args[1]
 	//if(Acceptance == "true"){
 	 //status1 = "RequestInitiated"
 	//} 
