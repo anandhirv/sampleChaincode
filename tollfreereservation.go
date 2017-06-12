@@ -528,7 +528,7 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	//value = args[1]
 	Acceptance = args[1]
 	if(Acceptance == "true"){
-	 status1 = "RequestInitiated"
+	 status1 = "Block"
 	} 
 	
 	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
