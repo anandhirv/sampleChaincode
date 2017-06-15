@@ -531,7 +531,7 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	 status1 = "RequestInitiated"
 	} 
 	
-	ReserveObj := Reserve{TollFreeno: args[0],ServiceProvider: args[1], status: status1}
+	ReserveObj := Reserve{TollFreeno: args[0], status: status1}
    fmt.Println("Reserve Details Structure ",ReserveObj)
 	//value, e := json.Marshal(ReserveObj)
 	//if e != nil {
