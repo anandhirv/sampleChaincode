@@ -101,6 +101,7 @@ type Reserve struct {
 	TollFreeno string
 	ServiceProvider string
 	status string
+	AssignedDate string
 }
 // Init method will be called during deployment.
 
@@ -516,8 +517,8 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 
     fmt.Println("Reserve Information invoke Begins...")
 
-	if len(args) != 3 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 3")
+	if len(args) != 4 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
 	// Check the Reseve paramater, if true then update world state with new status
@@ -532,7 +533,7 @@ func (t *NumberPortabilityChaincode) Reserve(stub shim.ChaincodeStubInterface, a
 	 status1 = "RequestInitiated"
 	} 
 	
-	ReserveObj := Reserve{TollFreeno: args[0],ServiceProvider: args[1], status: status1}
+	ReserveObj := Reserve{TollFreeno: args[0],ServiceProvider: args[1], status: status1, AssignedDate: args[3]}
    fmt.Println("Reserve Details Structure ",ReserveObj)
 	//value, e := json.Marshal(ReserveObj)
 	//if e != nil {
