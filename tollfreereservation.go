@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"strings"
 )
 
 // NumberPortabilityChaincode is a Smart Contract between CSPs for porting In or Porting Out Customers and settling the billing across the CSPs
