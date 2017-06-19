@@ -222,7 +222,7 @@ func (t *NumberPortabilityChaincode) RegulatorQuery1(stub shim.ChaincodeStubInte
     var key, jsonResp string
     var err error
 
-    if len(args) <= 2 {
+    if len(args) != 1 {
         return nil, errors.New("Incorrect number of arguments. Expecting 2 arguments")
     }
 
