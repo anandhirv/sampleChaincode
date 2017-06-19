@@ -19,7 +19,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -29,72 +28,6 @@ import (
 type NumberPortabilityChaincode struct {
 }
 
-type EligibilityConfirm struct {
-
-		Number string
-		ServiceProviderOld string
-		ServiceProviderNew string
-		CustomerName string 
-	    SSNNumber string
-	    PortabilityIndicator string
-		status string
-}
-
-
-
-type UserAcceptance struct {
-
-		Number string
-		ServiceProviderOld string
-		PlanOld string 
-	    ServiceValidityOld string
-	    TalktimeBalanceOld string
-		SMSbalanceOld string
-		DataBalanceOld string
-		ServiceProviderNew string
-		PlanNew string 
-	    ServiceValidityNew string
-	    TalktimeBalanceNew string
-		SMSbalanceNew string
-		DataBalanceNew string
-		CustomerAcceptance string
-		status string
-		
-}
-
-
-type UsageDetailsFromDonorandAcceptorCSP struct {
-
-		Number string
-		ServiceProviderOld string
-		PlanOld string 
-	    ServiceValidityOld string
-	    TalktimeBalanceOld string
-		SMSbalanceOld string
-		DataBalanceOld string
-		ServiceProviderNew string
-		PlanNew string 
-	    ServiceValidityNew string
-	    TalktimeBalanceNew string
-		SMSbalanceNew string
-		DataBalanceNew string
-		status string
-		
-}
-
-
-type UsageDetailsFromCSP struct {
-
-		Number string
-		ServiceProviderOld string
-		ServiceProviderNew string
-		Plan string 
-	    ServiceValidity string
-	    TalktimeBalance string
-		SMSbalance string
-		DataBalance string
-		status string
-}
 
 type Reserve struct {
 	TollFreeno string
